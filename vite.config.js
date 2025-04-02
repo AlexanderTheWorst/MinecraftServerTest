@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import tailwindcss from '@tailwindcss/vite'
 import path from 'path';
 import postcss from './postcss.config.js'; // Tailwind PostCSS config
 
@@ -11,6 +12,7 @@ export default defineConfig({
         dev: true, // Enables Svelte in development mode
       },
     }),
+    tailwindcss(),
   ],
   resolve: {
     alias: {
@@ -37,7 +39,14 @@ export default defineConfig({
     // },
   },
   server: {
+    cors: true, // Allows all origins
     open: false, // Opens the browser when Vite dev server starts
     port: 3000, // Custom dev server port
+    proxy: {
+      "/ws": {
+        target: "ws://localhost:8080/ws", // Proxy WebSocket connections to Fastify
+        ws: true, // Enable WebSocket proxying
+      }
+    },
   },
 });
