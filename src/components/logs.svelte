@@ -5,13 +5,16 @@
   let logs = [];
   let server_data = {};
 
-  ServerListener.on("data:log", (data) => {
-    console.log(data);
+  ServerListener.on("server:log", (data) => {
     logs = [...logs, data];
   });
 
-  ServerListener.on("data:status", (status) => {
+  ServerListener.on("connection:status:reveal", (status) => {
     console.log(status);
+    for (let i in status) {
+      server_data = { ...server_data, [i]: status[i] };
+    }
+    console.log(server_data);
   });
 
   onMount(() => {
@@ -19,16 +22,14 @@
     let input = document.querySelector("#LOGS_INPUT");
 
     main.addEventListener("click", (ev) => {
-      console.log(document.hasFocus(input))
-        // Ensure clicks anywhere inside `main` focus the input
-        if (document.activeElement !== input) {
-            input.focus();
-        }
+      if (document.activeElement !== input) {
+        input.focus();
+      }
     });
 
     input.addEventListener("mousedown", (ev) => {
-        // Allow focus behavior for clicks inside the input itself
-        ev.stopPropagation();
+      // Allow focus behavior for clicks inside the input itself
+      ev.stopPropagation();
     });
 
     // Handle selectionchange event
@@ -56,9 +57,9 @@
         event.preventDefault();
         ws.send(
           JSON.stringify({
-            type: "data:send",
+            type: "server:send:command",
             data: input.textContent,
-          }),
+          })
         );
         input.textContent = "";
         input.style.setProperty("--PRE_CURSOR_TEXT", `${0}`);
@@ -68,33 +69,77 @@
   });
 </script>
 
-<main id="LOGS_MAIN" class="bg-[black] text-[white]">
-  <!-- {#each logs as log}
-    <p>{log}</p>
-  {/each} -->
-  <pre>{logs.join("")}</pre>
-  <span id="LOGS_INPUT" contenteditable="true">asdsad</span>
+<main id="LOGS_MAIN" class="text-[white]">
+  <section id="LOGS_STATUS" class="bg-secondary log-status sticky w-full top-[0] p-[10px] flex justify-between">
+    <div class="flex items-center gap-[8px]">
+      <div
+        class="rounded-[10px] w-[10px] h-[10px] bg-[{server_data.alive
+          ? 'green'
+          : 'red'}]"
+      ></div>
+      <p>{server_data.alive ? "Active" : "Inactive"}</p>
+    </div>
+    {#if !server_data.alive}
+      <button
+        on:click={() => {
+          window.ServerListener.emit("server:send:start");
+        }}
+        id="LOGS_CONTROLS_STATUS">Start</button
+      >
+    {/if}
+  </section>
+
+  <section class="w-100 h-100 p-[10px] bg-secondary overflow-y-scroll">
+    <pre class="flex-[1]">{logs.join("")}</pre>
+    <div class="flex items-center gap-[1ch]">
+      <span>$ </span>
+      <span id="LOGS_INPUT" contenteditable="true">asdsad</span>
+    </div>
+  </section>
 </main>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Mono&display=swap');
-
   :root {
-    font-family: 'Noto Sans Mono', monospace;
+  }
+
+  #LOGS_STATUS {
+    font-family: "Open Sans", sans-serif;
+    font-weight: 500;
+    font-size: larger;
+
+    button {
+      padding: 10px;
+      padding-left: 15px;
+      padding-right: 15px;
+      background-color: rgb(255 255 255 / 0.075);
+      border-radius: 8px;
+    }
   }
 
   #LOGS_MAIN {
-    background-color: black;
-    width: 100vw;
+    /* background-color: black; */
+    width: 80vw;
     height: 90vh;
-    padding: 10px;
     position: relative;
     box-sizing: border-box;
-    overflow-y: scroll;
+    /* overflow-y: hidden; */
     user-select: none;
+    font-family: "Noto Sans Mono", monospace;
+    
+    gap: 32px;
+    display: flex;
+    flex-direction: column;
+
+    section {
+      /* background-color: black; */
+    }
+
+    section:nth-child(2) {
+      flex: 1;
+    }
   }
 
-  #LOGS_MAIN > pre {
+  pre {
     user-select: text;
   }
 
@@ -102,10 +147,13 @@
     /* font-size: 1.25rem; */
     position: relative; /* Keeps caret within the bounds of the input */
     caret-color: transparent; /* Hides default caret */
-    display: flex;
+    display: inline-flex;
     align-items: center;
     outline: none;
     border: none;
+    user-select: text;
+    min-width: 1ch;
+    height: 2ch;
   }
 
   #LOGS_INPUT:focus::before {

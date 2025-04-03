@@ -4,16 +4,23 @@
 
     import Listener from "eventemitter2";
     
-
     let socket = new WebSocket("ws://localhost:8080/ws", "ws")
     window.ws = socket;
     window.ServerListener = new Listener();
-    console.log(window.ServerListener)
 
-    ws.addEventListener("message", (data) => {
-        console.log(data)
+    window.ServerListener.on("server:send:start", () => {
+        console.log("ATTEMPT!")
+    })
+
+    socket.onopen = () => {
+        socket.send(JSON.stringify({
+            type: "connection:ready",
+            data: {}
+        }));
+    }
+
+    socket.addEventListener("message", (data) => {
         let payload = JSON.parse(data.data);
-        console.log(payload.type)
         window.ServerListener.emit(payload.type, payload.data);
     })
 
@@ -30,7 +37,7 @@
     // socket.onmessage = (msg) => console.log(msg);
 </script>
 
-<main class="absolute">
+<main class="absolute flex flex-col items-center w-screen min-h-screen bg-primary">
     <Test test="gay" />
     <Logs />
 </main>
