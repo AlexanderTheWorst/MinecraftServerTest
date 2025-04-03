@@ -25,8 +25,6 @@
         let on_cursor = selection.anchorNode.textContent
           .substr(0, selection.focusOffset + 1)
           .split("")[selection.focusOffset];
-        //   .map((e) => e)
-        //   .join("");
         input.style.setProperty("--PRE_CURSOR_TEXT", `${pre_cursor}`);
         input.style.setProperty(
           "--CURSOR_TEXT",
@@ -39,6 +37,16 @@
     input.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
         event.preventDefault();
+        ws.send(JSON.stringify({
+          type: "data:send",
+          data: input.textContent
+        }));
+        input.textContent = "";
+        input.style.setProperty("--PRE_CURSOR_TEXT", `${0}`);
+        input.style.setProperty(
+          "--CURSOR_TEXT",
+          `""`
+        );
       }
     });
   });
