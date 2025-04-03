@@ -86,14 +86,16 @@
   #LOGS_MAIN {
     background-color: black;
     width: 100vw;
-    min-height: 500px;
+    height: 90vh;
     padding: 10px;
     position: relative;
     box-sizing: border-box;
+    overflow-y: scroll;
+    user-select: none;
   }
 
   #LOGS_MAIN > pre {
-    user-select: none;
+    user-select: text;
   }
 
   #LOGS_INPUT {
