@@ -1,6 +1,7 @@
 <script>
     import Test from "@components/test.svelte";
     import Logs from "./components/logs.svelte";
+    import Navbar from "./components/Navbar.svelte";
 
     import Listener from "eventemitter2";
     
@@ -38,8 +39,10 @@
 </script>
 
 <main class="absolute flex flex-col items-center w-screen min-h-screen bg-primary">
-    <Test test="gay" />
-    <Logs />
+    <Navbar />
+    <section>
+        <Logs />
+    </section>
 </main>
 
 <style>

@@ -59,7 +59,7 @@
           JSON.stringify({
             type: "server:send:command",
             data: input.textContent,
-          })
+          }),
         );
         input.textContent = "";
         input.style.setProperty("--PRE_CURSOR_TEXT", `${0}`);
@@ -70,12 +70,14 @@
 </script>
 
 <main id="LOGS_MAIN" class="text-[white]">
-  <section id="LOGS_STATUS" class="bg-secondary log-status sticky w-full top-[0] p-[10px] flex justify-between">
+  <section
+    id="LOGS_STATUS"
+    class="bg-secondary log-status sticky w-full top-[0] p-[10px] flex justify-between"
+  >
     <div class="flex items-center gap-[8px]">
       <div
-        class="rounded-[10px] w-[10px] h-[10px] bg-[{server_data.alive
-          ? 'green'
-          : 'red'}]"
+        class="rounded-[10px] w-[10px] h-[10px]"
+        style="background: {server_data.alive ? 'green' : 'red'}"
       ></div>
       <p>{server_data.alive ? "Active" : "Inactive"}</p>
     </div>
@@ -125,7 +127,7 @@
     /* overflow-y: hidden; */
     user-select: none;
     font-family: "Noto Sans Mono", monospace;
-    
+
     gap: 32px;
     display: flex;
     flex-direction: column;
@@ -141,6 +143,7 @@
 
   pre {
     user-select: text;
+    text-wrap: stable;
   }
 
   #LOGS_INPUT {
@@ -154,6 +157,7 @@
     user-select: text;
     min-width: 1ch;
     height: 2ch;
+    font-family: "Noto Sans Mono", monospace;
   }
 
   #LOGS_INPUT:focus::before {
