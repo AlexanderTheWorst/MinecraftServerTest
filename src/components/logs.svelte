@@ -1,76 +1,123 @@
 <script>
   import { onMount } from "svelte";
 
-  let { ws, ServerListener } = window;
+  import { ws, listener } from "@stores/store";
+
+  export let socket;
+  export let eventListener;
+
   let logs = [];
   let server_data = {};
 
-  ServerListener.on("server:log", (data) => {
-    logs = [...logs, data];
-  });
-
-  ServerListener.on("connection:status:reveal", (status) => {
-    console.log(status);
-    for (let i in status) {
-      server_data = { ...server_data, [i]: status[i] };
-    }
-    console.log(server_data);
-  });
+  let main, input;
 
   onMount(() => {
-    let main = document.querySelector("#LOGS_MAIN");
-    let input = document.querySelector("#LOGS_INPUT");
+    console.log(socket, eventListener)
 
-    main.addEventListener("click", (ev) => {
-      if (document.activeElement !== input) {
-        input.focus();
+    if (
+      typeof window !== "undefined" &&
+      typeof document !== "undefined" &&
+      typeof input !== "undefined" &&
+      typeof main !== "undefined"
+    ) {
+      console.log(eventListener);
+      eventListener.on("server:log", (data) => {
+        console.log("Received server:log data:", data);
+        logs = [...logs, data];
+      });
+
+      eventListener.on("connection:status:reveal", (status) => {
+        console.log("Connection status:", status);
+        for (let i in status) {
+          server_data = { ...server_data, [i]: status[i] };
+        }
+      });
+
+      if (main) {
+        main.addEventListener("click", (ev) => {
+          if (document.activeElement !== input) {
+            input.focus();
+          }
+        });
       }
-    });
 
-    input.addEventListener("mousedown", (ev) => {
-      // Allow focus behavior for clicks inside the input itself
-      ev.stopPropagation();
-    });
-
-    // Handle selectionchange event
-    document.addEventListener("selectionchange", (ev) => {
-      let selection = window.getSelection();
-      if (
-        (selection.anchorNode.parentElement == input ||
-          selection.anchorNode == input) &&
-        selection.type == "Caret"
-      ) {
-        let pre_cursor = selection.anchorNode.textContent
-          .substr(0, selection.focusOffset)
-          .split("").length;
-        let on_cursor = selection.anchorNode.textContent
-          .substr(0, selection.focusOffset + 1)
-          .split("")[selection.focusOffset];
-        input.style.setProperty("--PRE_CURSOR_TEXT", `${pre_cursor}`);
-        input.style.setProperty("--CURSOR_TEXT", `"${on_cursor || ""}"`);
+      if (input && socket) {
+        input.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            console.log(socket);
+            socket.send(
+              JSON.stringify({
+                type: "server:send:command",
+                data: input.textContent,
+              })
+            );
+            input.textContent = "";
+            input.style.setProperty("--PRE_CURSOR_TEXT", `${0}`);
+            input.style.setProperty("--CURSOR_TEXT", `""`);
+          }
+        });
       }
-    });
 
-    // Prevent adding new lines when pressing Enter
-    input.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        ws.send(
-          JSON.stringify({
-            type: "server:send:command",
-            data: input.textContent,
-          })
-        );
-        input.textContent = "";
-        input.style.setProperty("--PRE_CURSOR_TEXT", `${0}`);
-        input.style.setProperty("--CURSOR_TEXT", `""`);
+      if (document) {
+        document.addEventListener("selectionchange", (ev) => {
+          let selection = window.getSelection();
+          if (
+            (selection.anchorNode.parentElement == input ||
+              selection.anchorNode == input) &&
+            selection.type == "Caret"
+          ) {
+            let pre_cursor = selection.anchorNode.textContent
+              .substr(0, selection.focusOffset)
+              .split("").length;
+            let on_cursor = selection.anchorNode.textContent
+              .substr(0, selection.focusOffset + 1)
+              .split("")[selection.focusOffset];
+            input.style.setProperty("--PRE_CURSOR_TEXT", `${pre_cursor}`);
+            input.style.setProperty("--CURSOR_TEXT", `"${on_cursor || ""}"`);
+          }
+        });
       }
-    });
+    }
   });
+
+  function inputLoad() {
+    console.log("LOAD");
+  }
+
+  // onMount(() => {
+  //   // Check if the code is running in the browser
+  //   if (
+
+  //   ) {
+
+  //     if (eventListener) {
+  //       console.log(eventListener);
+
+  //       eventListener.on("server:log", (data) => {
+  //         logs = [...logs, data];
+  //         console.log(logs);
+  //       });
+
+  //       eventListener.on("connection:status:reveal", (status) => {
+  //         for (let i in status) {
+  //           server_data = { ...server_data, [i]: status[i] };
+  //         }
+  //       });
+  //     }
+
+  //     if (document) {
+
+  //     }
+  //   }
+  // });
 </script>
 
-<main id="LOGS_MAIN" class="text-[white]">
-  <section id="LOGS_STATUS" class="bg-secondary log-status sticky w-full top-[0] p-[10px] flex justify-between">
+<main id="LOGS_MAIN" class="text-[white]" bind:this={main}>
+  <section
+    id="LOGS_STATUS"
+    class="bg-secondary log-status sticky w-full top-[0] p-[10px] flex justify-between"
+  >
     <div class="flex items-center gap-[8px]">
       <div
         class="rounded-[10px] w-[10px] h-[10px] bg-[{server_data.alive
@@ -82,7 +129,7 @@
     {#if !server_data.alive}
       <button
         on:click={() => {
-          window.ServerListener.emit("server:send:start");
+          eventListener.emit("server:send:start");
         }}
         id="LOGS_CONTROLS_STATUS">Start</button
       >
@@ -93,12 +140,14 @@
     <pre class="flex-[1]">{logs.join("")}</pre>
     <div class="flex items-center gap-[1ch]">
       <span>$ </span>
-      <span id="LOGS_INPUT" contenteditable="true">asdsad</span>
+      <span id="LOGS_INPUT" bind:this={input} contenteditable="true"
+        >asdsad</span
+      >
     </div>
   </section>
 </main>
 
-<style>
+<style lang="scss">
   :root {
   }
 
@@ -118,20 +167,20 @@
 
   #LOGS_MAIN {
     /* background-color: black; */
-    width: 80vw;
+    width: 100vw;
     height: 90vh;
     position: relative;
     box-sizing: border-box;
     /* overflow-y: hidden; */
     user-select: none;
     font-family: "Noto Sans Mono", monospace;
-    
+
     gap: 32px;
     display: flex;
     flex-direction: column;
 
     section {
-      /* background-color: black; */
+      width: 100%;
     }
 
     section:nth-child(2) {

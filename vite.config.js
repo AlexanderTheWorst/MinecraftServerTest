@@ -1,22 +1,22 @@
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path';
-import postcss from './postcss.config.js'; // Tailwind PostCSS config
+import postcss from './postcss.config.js';
 
 export default defineConfig({
   plugins: [
-    svelte({
-      // Optional: configure Svelte-specific options
-      compilerOptions: {
-        dev: true, // Enables Svelte in development mode
-      },
-    }),
+    sveltekit(),
+    // svelte({
+    //   compilerOptions: {
+    //     dev: true,
+    //   },
+    // }),
     tailwindcss(),
   ],
   resolve: {
     alias: {
-      // Alias to help with imports, can be customized
       '@src': path.resolve(__dirname, 'src'),
       '@components': path.resolve(__dirname, 'src/components'),
       '@layouts': path.resolve(__dirname, 'src/layouts'),
@@ -27,25 +27,22 @@ export default defineConfig({
     },
   },
   css: {
-    postcss, // Adds Tailwind CSS and other PostCSS settings
+    postcss
   },
-  build: {
-    // outDir: 'dist', // Output directory for production build
-    // assetsDir: 'assets', // Folder where assets will be placed
-    // rollupOptions: {
-    //   input: {
-    //     main: path.resolve(__dirname, 'public', 'index.html'),
-    //   }
-    // },
-  },
+  build: {},
   server: {
-    cors: true, // Allows all origins
-    open: false, // Opens the browser when Vite dev server starts
-    port: 3000, // Custom dev server port
+    fs: {
+      allow: [
+        "./public/globals.css"
+      ]
+    },
+    cors: true,
+    open: false,
+    port: 3000,
     proxy: {
       "/ws": {
-        target: "ws://localhost:8080/ws", // Proxy WebSocket connections to Fastify
-        ws: true, // Enable WebSocket proxying
+        target: "ws://localhost:8080/ws",
+        ws: true,
       }
     },
   },

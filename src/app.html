@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link href="/globals.css" rel="stylesheet">
+    %sveltekit.head%
 </head>
 <body>
-    <div class="w-screen min-h-screen" id="app"></div>
-    <script type="module" src="./src/main.js"></script>
+    <main>
+        %sveltekit.body%
+    </main>
 </body>
 </html>
