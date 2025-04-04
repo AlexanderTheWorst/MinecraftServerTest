@@ -120,9 +120,8 @@
   >
     <div class="flex items-center gap-[8px]">
       <div
-        class="rounded-[10px] w-[10px] h-[10px] bg-[{server_data.alive
-          ? 'green'
-          : 'red'}]"
+        class="rounded-[10px] w-[10px] h-[10px]"
+        style="background: {server_data.alive ? 'green' : 'red'}"
       ></div>
       <p>{server_data.alive ? "Active" : "Inactive"}</p>
     </div>
@@ -190,6 +189,7 @@
 
   pre {
     user-select: text;
+    text-wrap: stable;
   }
 
   #LOGS_INPUT {
@@ -203,6 +203,7 @@
     user-select: text;
     min-width: 1ch;
     height: 2ch;
+    font-family: "Noto Sans Mono", monospace;
   }
 
   #LOGS_INPUT:focus::before {
