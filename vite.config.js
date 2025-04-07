@@ -33,17 +33,12 @@ export default defineConfig({
   server: {
     fs: {
       allow: [
-        "./public/globals.css"
+        "./public/globals.css",
+        "./public/images/"
       ]
     },
     cors: true,
     open: false,
     port: 3000,
-    proxy: {
-      "/ws": {
-        target: "ws://localhost:8080/ws",
-        ws: true,
-      }
-    },
   },
 });
