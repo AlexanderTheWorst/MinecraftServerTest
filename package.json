@@ -4,7 +4,7 @@
   "main": "src/app.js",
   "scripts": {
     "clean": "rimraf .svelte-kit build node_modules/.vite",
-    "start": "npm run clean && vite --host",
+    "start": "vite --host",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
