@@ -4,7 +4,7 @@
 
 <div class="w-screen min-h-screen bg-primary flex">
     <Sidebar />
-    <section class="container w-full min-h-screen bg-red-50">
+    <section class="container w-full min-h-screen">
         <h2>Hello, SvelteKit!</h2>
     </section>
 </div>
