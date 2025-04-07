@@ -1,0 +1,74 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Mono&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
+
+@import "tailwindcss";
+
+* {
+    font-size: 18px;
+}
+
+body {
+    background-color: #1A1F24;
+    /* Primary background color */
+    color: #BDC3C7;
+    /* Default text color */
+}
+
+.bg-primary {
+    background-color: #0C0B1B;
+    /* Dark background */
+}
+
+.bg-secondary {
+    background-color: #121026;
+    /* Dark blue background */
+}
+
+.border-primary {
+    border-color: #1D1C39;
+}
+
+.bg-accent {
+    background-color: #34495E;
+    /* Muted blue background */
+}
+
+.text-accent {
+    color: #34495E;
+    /* Muted blue for text or borders */
+}
+
+.text-lightAccent {
+    color: #5D6D7E;
+    /* Soft blue for hover/active text */
+}
+
+.text-teal {
+    color: #16A085;
+    /* Teal for action buttons */
+}
+
+.text-brightBlue {
+    color: #2980B9;
+    /* Bright blue for links/buttons */
+}
+
+.text-lightGray {
+    color: #BDC3C7;
+    /* Light gray for text */
+}
+
+.btn-primary {
+    background-color: #16A085;
+    color: #fff;
+}
+
+.btn-secondary {
+    background-color: #2980B9;
+    color: #fff;
+}
+
+.btn:hover {
+    background-color: #4C6A92;
+    /* Slate blue for hover effects */
+}
