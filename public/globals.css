@@ -10,21 +10,13 @@ body {
     /* Default text color */
 }
 
-h1,
-h2,
-h3,
-h4 {
-    font-family: 'Noto Sans Mono', monospace;
-    /* Heading text */
-}
-
 .bg-primary {
-    background-color: #141619;
+    background-color: #0C0B1B;
     /* Dark background */
 }
 
 .bg-secondary {
-    background-color: #1e1f26;
+    background-color: #121026;
     /* Dark blue background */
 }
 

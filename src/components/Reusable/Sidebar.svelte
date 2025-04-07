@@ -1,10 +1,10 @@
-<main>
+<main class="bg-secondary w-[300px] min-h-screen">
     <section class="details">
-        
+
     </section>
 
     <section class="list">
-        {#each e in [1,2,3,4,5]} 
+        {#each [1,2,3,4,5] as e} 
             <p>{e}</p>
         {/each} 
     </section>
