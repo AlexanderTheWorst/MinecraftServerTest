@@ -70,10 +70,19 @@
           >
             {#each page.Subpages as subpage}
               <button
-                class="pl-[15px] pt-[5px] pb-[5px] w-full border-l border-[#FFFFFF33] text-left cursor-pointer"
+                class="pl-[15px] pt-[5px] pb-[5px] w-full border-l {$app_data.current_page ===
+                subpage.key
+                  ? 'border-[#FFFFFF]'
+                  : 'border-[#FFFFFF33]'} text-left cursor-pointer"
                 on:click={() => selectPage(subpage.key)}
               >
-                <p class={$app_data.current_page === subpage.key ? "text-primary" : ""}>{subpage.name}</p>
+                <p
+                  class={$app_data.current_page === subpage.key
+                    ? "text-primary"
+                    : ""}
+                >
+                  {subpage.name}
+                </p>
               </button>
             {/each}
           </section>
@@ -92,5 +101,9 @@
 
   .list:last-child {
     border-bottom: 1px solid var(--BORDER-PRIMARY);
+  }
+
+  .list > * {
+    user-select: none;
   }
 </style>
