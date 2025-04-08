@@ -42,7 +42,7 @@
 
 <div class="w-screen min-h-screen bg-primary flex">
     <Sidebar {app_data} />
-    <section class="container w-full min-h-screen flex flex-col">
+    <section class="container min-h-screen flex flex-col p-[50px]">
         {#if current_page}
             <svelte:component
                 this={current_page}
