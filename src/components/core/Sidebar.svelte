@@ -4,27 +4,27 @@
 
   let pages = [
     {
-      Title: "System",
-      Collapsed: false,
-      Subpages: [
-        { name: "Console", key: "console" },
-        { name: "Server Details", key: "server_details" },
+      title: "System",
+      collapsed: false,
+      subpages: [
+        { label: "Console", key: "console" },
+        { label: "Server Details", key: "server_details" },
       ],
     },
     {
-      Title: "Management",
-      Collapsed: false,
-      Subpages: [
-        { name: "Plugin Manager", key: "plugin_manager" },
-        { name: "Configuration", key: "configuration" },
-        { name: "Scheduler", key: "scheduler" },
+      title: "Management",
+      collapsed: false,
+      subpages: [
+        { label: "Plugin Manager", key: "plugin_manager" },
+        { label: "Configuration", key: "configuration" },
+        { label: "Scheduler", key: "scheduler" },
       ],
     },
   ];
 
   function togglePage(page) {
-    page.Collapsed = !page.Collapsed;
-    pages = [...pages]; // force reactivity
+    page.collapsed = !page.collapsed;
+    pages = [...pages];
   }
 
   function selectPage(key) {
@@ -54,21 +54,21 @@
         <section
           role="button"
           tabindex="0"
-          aria-pressed={!page.Collapsed}
+          aria-pressed={!page.collapsed}
           class="page_header p-[10px] flex justify-between text-primary cursor-pointer"
           on:click={() => togglePage(page)}
           on:keydown={(e) => e.key === "Enter" && togglePage(page)}
         >
-          <p>{page.Title}</p>
-          <Collapse active={page.Collapsed} />
+          <p>{page.title}</p>
+          <Collapse active={page.collapsed} />
         </section>
 
         <!-- Subpages -->
-        {#if !page.Collapsed}
+        {#if !page.collapsed}
           <section
             class="page_subpages flex flex-col items-start pl-[10px] pb-[15px] w-full"
           >
-            {#each page.Subpages as subpage}
+            {#each page.subpages as subpage}
               <button
                 class="pl-[15px] pt-[5px] pb-[5px] w-full border-l {$app_data.current_page ===
                 subpage.key
@@ -81,7 +81,7 @@
                     ? "text-primary"
                     : ""}
                 >
-                  {subpage.name}
+                  {subpage.label}
                 </p>
               </button>
             {/each}

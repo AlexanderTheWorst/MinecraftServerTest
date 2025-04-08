@@ -1,5 +1,7 @@
 <script>
     import Sidebar from "@components/core/Sidebar.svelte";
+    import { browser } from "$app/environment"
+    import { onDestroy, onMount } from "svelte";
 
     import { writable } from "svelte/store";
 
@@ -8,21 +10,34 @@
     });
 
     let current_page;
+    let loaded_pages = {};
     const pages = import.meta.glob("@components/pages/*.svelte");
-    $: if ($app_data.current_page) {
-        let target = Object.keys(pages).find((path) =>
-            path.toLowerCase().includes(`${$app_data.current_page}.svelte`),
-        );
 
-        if (target) pages[target]().then((mod) => (current_page = mod.default));
+    for (let page in pages) {
+        (pages[page]()).then((mod) => {
+            if (mod.meta && mod.meta.key) {
+                let key = mod.meta.key;
+                loaded_pages[key] = mod.default;
+            }
+        })
+    }
+
+    $: if ($app_data.current_page) {
+        if (loaded_pages[$app_data.current_page]) current_page = loaded_pages[$app_data.current_page];
         else {
-            import("@components/pages/404.svelte").then(
-                (mod) => (current_page = mod.default),
-            );
+            current_page = loaded_pages["404"];
         }
     } else {
         current_page = undefined;
     }
+
+    onMount(() => {
+        if (browser) {
+            console.log("Client!");
+        }
+
+        onDestroy(() => {})
+    })
 </script>
 
 <div class="w-screen min-h-screen bg-primary flex">
@@ -31,7 +46,7 @@
         {#if current_page}
             <svelte:component
                 this={current_page}
-                app_data="{app_data};"
+                {app_data}
                 class="flex-1"
             />
         {/if}

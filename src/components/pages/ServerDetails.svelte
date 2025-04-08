@@ -1,6 +1,6 @@
 <script context="module">
     export const meta = {
-        key: "console"
+        key: "server_details"
     };
 </script>
 
@@ -9,5 +9,5 @@
 </svelte:head>
 
 <main>
-    <h2 class="!text-5xl">Console</h2>
+    <h2 class="!text-5xl">Server Details</h2>
 </main>
